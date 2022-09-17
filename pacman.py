@@ -7,10 +7,8 @@ import asyncio
 import concurrent.futures
 import time
 
-# class Node
 
 TEST_MODE = True
-
 WORLD_SIZE = 20
 BLOCK_SIZE = 32
 WIDTH = WORLD_SIZE*BLOCK_SIZE
@@ -126,9 +124,8 @@ def draw():
         screen.draw.text(pacman.banner, center=(
             WIDTH/2, HEIGHT/2), fontsize=120)
 
+
 # cek kalo didepan ada blcok maka dia akan diem
-
-
 def blocks_ahead_of(sprite, dx, dy):
     """Return a list of tiles at this position + delta"""
 
@@ -137,8 +134,6 @@ def blocks_ahead_of(sprite, dx, dy):
     x = int(round(sprite.left)) + dx
     y = int(round(sprite.top)) + dy
 
-    print(x)
-    print(y)
     # Find integer block pos, using floor (so 4.7 becomes 4)
     ix, iy = int(x // BLOCK_SIZE), int(y // BLOCK_SIZE)
     # Remainder let's us check adjacent blocks
@@ -159,9 +154,8 @@ def blocks_ahead_of(sprite, dx, dy):
 
     return blocks
 
+
 # buat balik keatas
-
-
 def wrap_around(mini, val, maxi):
     if val < mini:
         return maxi
@@ -176,7 +170,7 @@ def wrap_around(mini, val, maxi):
 def move_ahead(sprite):
     # Record current pos so we can see if the sprite moved
     oldx, oldy = sprite.x, sprite.y
-
+    print(oldx, oldy, " old")
     # In order to go in direction dx, dy there must be no wall that way
     if '=' not in blocks_ahead_of(sprite, sprite.dx, 0):
         sprite.x += sprite.dx
@@ -253,8 +247,10 @@ def minus_point():
     pacman.score = max(0, pacman.score-1)
 
 
-a = [[48, 48], [80, 48], [112, 48], [154, 48],
-     [186, 48], [218, 48], [240, 48], [240, 80]]
+a = [
+    # [48, 48], [80, 48], [112, 48], [154, 48],
+    #  [186, 48], [218, 48], [240, 48], [240, 80]
+]
 
 # update game
 

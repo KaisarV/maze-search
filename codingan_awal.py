@@ -32,13 +32,16 @@ char_to_image = {
 }
 
 # define world
+
+
 def draw():
     screen.clear()
     for y, row in enumerate(world):
         for x, block in enumerate(row):
             image = char_to_image.get(block, None)
             if image:
-                screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))
+                screen.blit(char_to_image[block],
+                            (x * BLOCK_SIZE, y * BLOCK_SIZE))
 
 
 load_level(1)
@@ -55,7 +58,8 @@ def draw():
         for x, block in enumerate(row):
             image = char_to_image.get(block, None)
             if image:
-                screen.blit(char_to_image[block], (x * BLOCK_SIZE, y * BLOCK_SIZE))
+                screen.blit(char_to_image[block],
+                            (x * BLOCK_SIZE, y * BLOCK_SIZE))
     pacman.draw()
 
 
@@ -155,4 +159,3 @@ def make_ghost_actors():
                 # Now we have the ghost sprite we don't need this block
                 world[y][x] = None
                 make_ghost_actors()
-
