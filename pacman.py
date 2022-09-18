@@ -170,7 +170,7 @@ def wrap_around(mini, val, maxi):
 def move_ahead(sprite):
     # Record current pos so we can see if the sprite moved
     oldx, oldy = sprite.x, sprite.y
-    print(oldx, oldy, " old")
+    # print(oldx, oldy, " old")
     # In order to go in direction dx, dy there must be no wall that way
     if '=' not in blocks_ahead_of(sprite, sprite.dx, 0):
         sprite.x += sprite.dx
