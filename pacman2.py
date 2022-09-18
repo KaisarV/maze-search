@@ -111,10 +111,10 @@ def move_ahead(sprite):
     return oldx != sprite.x or oldy != sprite.y
 
 
-a = [
-    [32, 32], [64, 32], [96, 32], [128, 32],
-    [160, 32], [192, 32], [64, 64]
-]
+# a = [
+#     [32, 32], [64, 32], [96, 32], [128, 32],
+#     [160, 32], [192, 32], [0, ]
+# ]
 
 a2 = []
 now = [32, 32]
@@ -130,61 +130,105 @@ class Node:
 head = Node([32, 32])
 
 
-def bfs():
-    current = head
+def isInLinkedList(data):
+    current2 = head
 
-    while current.next is not None:
-        current = current.next
+    while current2 is not None:
+        if current2.data == data:
+            return False
 
-    north = [current.data[0], current.data[1] - 32]
-    east = [current.data[0] + 32, current.data[1]]
-    south = [current.data[0], current.data[1] + 32]
-    west = [current.data[0] - 32, current.data[1]]
+        current2 = current2.next
 
-    if(north[1] != 0 and world[north[0]//32][north[1]//32] != '='):
+    return True
+
+
+def bfs(coordinate):
+
+    now = 1
+
+    # print(world[64//32][96//32], "========================================")
+
+    while True:
+
+        counter = 1
         current = head
+        currentNode = head
+
+        while counter != now:
+            currentNode = currentNode.next
+            counter += 1
+
         while current.next is not None:
             current = current.next
 
-        newNode = Node(north)
-        current.next = newNode
+        north = [currentNode.data[0]-32, currentNode.data[1]]
 
-    if(east[0] != 608 and world[east[0]//32][east[1]//32] != '='):
-        current = head
-        while current.next is not None:
-            current = current.next
+        east = [currentNode.data[0], currentNode.data[1]+32]
 
-        newNode = Node(east)
-        current.next = newNode
+        south = [currentNode.data[0]+32, currentNode.data[1]]
 
-    if(south[1] != 608 and world[south[0]//32][south[1]//32] != '='):
-        current = head
-        while current.next is not None:
-            current = current.next
+        west = [currentNode.data[0], currentNode.data[1]-32]
 
-        newNode = Node(south)
-        current.next = newNode
+        if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
 
-    if(west[0] != 0 and world[west[0]//32][west[1]//32] != '='):
-        current = head
-        while current.next is not None:
-            current = current.next
+            newNode = Node(north)
+            newNode.prev = currentNode
+            current.next = newNode
 
-        newNode = Node(west)
-        current.next = newNode
+        if(north == coordinate):
+            # print(north)
+            print("DAPETT n")
+            break
 
+        if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
 
-def update():
-    move_ahead(pacman)
-    # move_ahead(marker)
+            newNode = Node(east)
+            current.next = newNode
+            current.next.prev = currentNode
 
-    if len(a) != 0:
-        marker.x = a[0][0]
-        marker.y = a[0][1]
-        time.sleep(0.5)
+        if(east == coordinate):
+            # print(east)
+            print("DAPETT e")
+            break
 
-    if len(a) != 0:
-        a.pop(0)
+        if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
+
+            newNode = Node(south)
+            newNode.prev = currentNode
+            current.next = newNode
+
+            # print(south)
+
+        if(south == coordinate):
+            # print(south)
+            print("DAPETT s")
+            break
+
+        if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
+
+            newNode = Node(west)
+
+            newNode.prev = currentNode
+            current.next = newNode
+
+        if(west == coordinate):
+
+            print("DAPETT west")
+            break
+
+        now += 1
 
 
 def on_key_up(key):
@@ -208,16 +252,36 @@ def on_key_down(key):
 
 # Game set up
 load_level(1)
-bfs()
+bfs([384, 0])
 
 current = head
-
-while current is not None:
+print("=======================")
+while current.next is not None:
     print(current.data)
-
     current = current.next
 
+listPath = []
 
+while current is not None:
+    listPath.insert(0, current.data)
+    print(current.data)
+    current = current.prev
+
+
+print(listPath)
 # for row in world:
 #     print(row)
 # print(world[2][2], "adsfgh")
+
+
+def update():
+    move_ahead(pacman)
+    move_ahead(marker)
+
+    if len(listPath) != 0:
+        marker.x = listPath[0][1]
+        marker.y = listPath[1][0]
+        time.sleep(0.5)
+
+    if len(listPath) != 0:
+        listPath.pop(0)
