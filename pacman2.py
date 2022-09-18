@@ -8,7 +8,6 @@ HEIGHT = WORLD_SIZE*BLOCK_SIZE
 
 SPEED = 2
 
-
 # An array containing the world tiles
 world = []
 
@@ -27,6 +26,7 @@ marker.dx, marker.dy = 0, 0
 char_to_image = {
     '.': 'dot.png',
     '=': 'wall.png',
+
 }
 
 
@@ -46,14 +46,13 @@ def set_random_dir(sprite, speed):
 
 
 def draw():
-    screen.clear()
+    # screen.clear()
     for y, row in enumerate(world):
         for x, block in enumerate(row):
             image = char_to_image.get(block, None)
             if image:
                 screen.blit(char_to_image[block], (x*BLOCK_SIZE, y*BLOCK_SIZE))
     pacman.draw()
-    marker.draw()
 
 
 def blocks_ahead_of(sprite, dx, dy):
@@ -111,11 +110,6 @@ def move_ahead(sprite):
     return oldx != sprite.x or oldy != sprite.y
 
 
-# a = [
-#     [32, 32], [64, 32], [96, 32], [128, 32],
-#     [160, 32], [192, 32], [0, ]
-# ]
-
 a2 = []
 now = [32, 32]
 
@@ -145,9 +139,6 @@ def isInLinkedList(data):
 def bfs(coordinate):
 
     now = 1
-
-    # print(world[64//32][96//32], "========================================")
-
     while True:
 
         counter = 1
@@ -206,8 +197,6 @@ def bfs(coordinate):
             newNode.prev = currentNode
             current.next = newNode
 
-            # print(south)
-
         if(south == coordinate):
             # print(south)
             print("DAPETT s")
@@ -250,38 +239,55 @@ def on_key_down(key):
         pacman.dy = SPEED
 
 
-# Game set up
+# Load Txt
 load_level(1)
+
+# Call Bfs
 bfs([384, 0])
 
 current = head
-print("=======================")
+listPath = []
+listNode = []
+move = []
+
 while current.next is not None:
-    print(current.data)
+    listNode.append(current.data)
     current = current.next
 
-listPath = []
 
 while current is not None:
     listPath.insert(0, current.data)
-    print(current.data)
+    move.insert(0, current.data)
     current = current.prev
-
-
-print(listPath)
-# for row in world:
-#     print(row)
-# print(world[2][2], "adsfgh")
 
 
 def update():
     move_ahead(pacman)
-    move_ahead(marker)
 
-    if len(listPath) != 0:
-        marker.x = listPath[0][1]
-        marker.y = listPath[1][0]
-        time.sleep(0.5)
+    if(len(listNode) != 0):
+        if len(listNode) != 0:
+            screen.blit('marker.png', (listNode[0][1], listNode[0][0]))
+            time.sleep(0.05)
 
-    if len(listPath) != 0:
-        listPath.pop(0)
+        if len(listNode) != 0:
+            listNode.pop(0)
+        else:
+            mode = 'Move'
+
+    elif(len(listPath) != 0):
+
+        if len(listPath) != 0:
+            screen.blit('dot.png', (listPath[0][1], listPath[0][0]))
+            time.sleep(0.05)
+
+        if len(listPath) != 0:
+            listPath.pop(0)
+    else:
+        screen.clear()
+        if len(move) != 0:
+            pacman.x = move[0][1]
+            pacman.y = move[0][0]
+            time.sleep(0.05)
+
+        if len(move) != 0:
+            move.pop(0)
