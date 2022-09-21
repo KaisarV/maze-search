@@ -136,20 +136,19 @@ def isInLinkedList(data):
     return True
 
 
-def bfs(coordinate):
-
+def dfs(coordinate):
+    unvisitedNode = []
     now = 1
-    while True:
 
+    while True:
         counter = 1
-        current = head
+        lastNode = head
         currentNode = head
 
         while counter != now:
-            currentNode = currentNode.next
-            counter += 1
+            lastNode = lastNode.next
 
-        while current.next is not None:
+        while current.next != None:
             current = current.next
 
         north = [currentNode.data[0]-32, currentNode.data[1]]
@@ -160,43 +159,12 @@ def bfs(coordinate):
 
         west = [currentNode.data[0], currentNode.data[1]-32]
 
-        if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
-            current = head
-            while current.next is not None:
-                current = current.next
+        isFound = False
 
-            newNode = Node(north)
-            newNode.prev = currentNode
-            current.next = newNode
-
-        if(north == coordinate):
-            break
-
-        if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
-            current = head
-            while current.next is not None:
-                current = current.next
-
-            newNode = Node(east)
-            current.next = newNode
-            current.next.prev = currentNode
-
-        if(east == coordinate):
-            break
-
-        if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
-            current = head
-            while current.next is not None:
-                current = current.next
-
-            newNode = Node(south)
-            newNode.prev = currentNode
-            current.next = newNode
-
-        if(south == coordinate):
-            break
-
+        # cek west
         if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
+            isFound = True
+
             current = head
             while current.next is not None:
                 current = current.next
@@ -206,10 +174,22 @@ def bfs(coordinate):
             newNode.prev = currentNode
             current.next = newNode
 
-        if(west == coordinate):
-            break
+        if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
 
-        now += 1
+            newNode = Node(west)
+
+            newNode.prev = currentNode
+            current.next = newNode
+
+        # cek south
+        # kalo west
+
+        # cek east
+
+        # cek north
 
 
 def on_key_up(key):
