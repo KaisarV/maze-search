@@ -122,6 +122,7 @@ class Node:
 
 
 head = Node([32, 32])
+unvisitedNode = []
 
 
 def isInLinkedList(data):
@@ -136,86 +137,168 @@ def isInLinkedList(data):
     return True
 
 
-def dfs(coordinate):
-    unvisitedNode = []
-    now = 1
+def isInUnvisitedNode(data):
+    for i in range(0, len(unvisitedNode)):
+        if data == unvisitedNode[i]:
+            return False
 
+    return True
+
+
+def dfs(coordinate):
+
+    for row in world:
+        print(row)
+
+    global unvisitedNode
+    # elemen pertama untuk jika tidak stuck, elemen kedua menyimpan cabang
+    now = 1
+    isStuck = False
+    hasFound = False
+
+    a = 0
     while True:
+        tes = head
         counter = 1
         lastNode = head
         currentNode = head
+        a += 1
+        while tes != None:
+            print(tes.data)
+            tes = tes.next
 
-        while counter != now:
+        if isStuck == True:
+
+            while currentNode.data != unvisitedNode[len(unvisitedNode)]:
+                currentNode = currentNode.next
+
+            unvisitedNode = unvisitedNode[:-1]
+        else:
+            while counter != now:
+                currentNode = currentNode.next
+                counter += 1
+
+        while lastNode.next != None:
             lastNode = lastNode.next
+        print(currentNode.data, "skrg")
+        if isInUnvisitedNode(currentNode.data) == True:
 
-        while current.next != None:
-            current = current.next
+            north = [currentNode.data[0]-32, currentNode.data[1]]
 
-        north = [currentNode.data[0]-32, currentNode.data[1]]
+            east = [currentNode.data[0], currentNode.data[1]+32]
 
-        east = [currentNode.data[0], currentNode.data[1]+32]
+            south = [currentNode.data[0]+32, currentNode.data[1]]
 
-        south = [currentNode.data[0]+32, currentNode.data[1]]
+            west = [currentNode.data[0], currentNode.data[1]-32]
 
-        west = [currentNode.data[0], currentNode.data[1]-32]
+            hasFound = False
 
-        isFound = False
+            # cek west
+            if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
 
-        # cek west
-        if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
-            isFound = True
+                print("ada barat", a, west)
+                hasFound = True
 
-            current = head
-            while current.next is not None:
-                current = current.next
+                current = head
+                while current.next is not None:
+                    current = current.next
 
-            newNode = Node(west)
+                newNode = Node(west)
 
-            newNode.prev = currentNode
-            current.next = newNode
+                newNode.prev = currentNode
+                current.next = newNode
 
-        if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
-            current = head
-            while current.next is not None:
-                current = current.next
+            if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
+                print("ada s", a, south)
+                current = head
+                while current.next is not None:
+                    current = current.next
 
-            newNode = Node(west)
+                newNode = Node(south)
 
-            newNode.prev = currentNode
-            current.next = newNode
+                newNode.prev = currentNode
+                current.next = newNode
 
-        # cek south
-        # kalo west
+                if hasFound == True:
+                    unvisitedNode.append(newNode.data)
+                else:
+                    hasFound = True
 
-        # cek east
+            if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
+                print("ada e", a, east)
+                current = head
+                while current.next is not None:
+                    current = current.next
 
-        # cek north
+                newNode = Node(east)
+                current.next = newNode
+                current.next.prev = currentNode
+
+                if hasFound == True:
+                    unvisitedNode.append(newNode.data)
+                else:
+                    hasFound = True
+
+            if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
+                print("ada u", a, north)
+                current = head
+                while current.next is not None:
+                    current = current.next
+
+                newNode = Node(north)
+                newNode.prev = currentNode
+                current.next = newNode
+
+                if hasFound == True:
+                    unvisitedNode.append(newNode.data)
+                else:
+                    hasFound = True
+
+            if(hasFound == False):
+                isStuck = True
+            else:
+                isStuck = False
+
+        if(north == coordinate):
+            print("dor")
+            break
+        if(east == coordinate):
+            print("dor")
+            break
+        if(west == coordinate):
+            print("dor")
+            break
+        if(south == coordinate):
+            print("dor")
+            break
+        print("====================")
+        now += 1
 
 
-def on_key_up(key):
-    if key in (keys.LEFT, keys.RIGHT):
-        pacman.dx = 0
-    if key in (keys.UP, keys.DOWN):
-        pacman.dy = 0
+# def on_key_up(key):
+#     if key in (keys.LEFT, keys.RIGHT):
+#         pacman.dx = 0
+#     if key in (keys.UP, keys.DOWN):
+#         pacman.dy = 0
 
 
-def on_key_down(key):
-    print(pacman.x, pacman.y)
-    if key == keys.LEFT:
-        pacman.dx = -SPEED
-    if key == keys.RIGHT:
-        pacman.dx = SPEED
-    if key == keys.UP:
-        pacman.dy = -SPEED
-    if key == keys.DOWN:
-        pacman.dy = SPEED
+# def on_key_down(key):
+#     print(pacman.x, pacman.y)
+#     if key == keys.LEFT:
+#         pacman.dx = -SPEED
+#     if key == keys.RIGHT:
+#         pacman.dx = SPEED
+#     if key == keys.UP:
+#         pacman.dy = -SPEED
+#     if key == keys.DOWN:
+#         pacman.dy = SPEED
 
 
 # Load Txt
 load_level(1)
 
 # Call Bfs
-bfs([384, 0])
+dfs([384, 0])
 
 current = head
 listNode = []
@@ -234,12 +317,11 @@ while current is not None:
 
 
 def update():
-    move_ahead(pacman)
 
     if(len(listNode) != 0):
         if len(listNode) != 0:
             screen.blit('marker.png', (listNode[0][1], listNode[0][0]))
-            time.sleep(0.05)
+            time.sleep(0.08)
 
         if len(listNode) != 0:
             listNode.pop(0)
