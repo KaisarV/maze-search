@@ -147,8 +147,8 @@ def isInUnvisitedNode(data):
 
 def dfs(coordinate):
 
-    for row in world:
-        print(row)
+    # for row in world:
+    #     print(row)
 
     global unvisitedNode
     # elemen pertama untuk jika tidak stuck, elemen kedua menyimpan cabang
@@ -158,6 +158,7 @@ def dfs(coordinate):
 
     a = 0
     while True:
+        print(now, "ini now")
         tes = head
         counter = 1
         lastNode = head
@@ -168,10 +169,11 @@ def dfs(coordinate):
             tes = tes.next
 
         if isStuck == True:
-
-            while currentNode.data != unvisitedNode[len(unvisitedNode)]:
+            print(unvisitedNode)
+            while currentNode.data != unvisitedNode[len(unvisitedNode)-1]:
                 currentNode = currentNode.next
 
+            print(currentNode.data, "ini current stuck")
             unvisitedNode = unvisitedNode[:-1]
         else:
             while counter != now:
@@ -180,8 +182,13 @@ def dfs(coordinate):
 
         while lastNode.next != None:
             lastNode = lastNode.next
-        print(currentNode.data, "skrg")
-        if isInUnvisitedNode(currentNode.data) == True:
+
+        if isInUnvisitedNode(currentNode.data) == True or isStuck == True:
+
+            if isStuck == True:
+                cek = True
+            else:
+                cek = False
 
             north = [currentNode.data[0]-32, currentNode.data[1]]
 
@@ -196,7 +203,6 @@ def dfs(coordinate):
             # cek west
             if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
 
-                print("ada barat", a, west)
                 hasFound = True
 
                 current = head
@@ -209,7 +215,6 @@ def dfs(coordinate):
                 current.next = newNode
 
             if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
-                print("ada s", a, south)
                 current = head
                 while current.next is not None:
                     current = current.next
@@ -225,7 +230,6 @@ def dfs(coordinate):
                     hasFound = True
 
             if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
-                print("ada e", a, east)
                 current = head
                 while current.next is not None:
                     current = current.next
@@ -240,7 +244,6 @@ def dfs(coordinate):
                     hasFound = True
 
             if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
-                print("ada u", a, north)
                 current = head
                 while current.next is not None:
                     current = current.next
@@ -260,20 +263,17 @@ def dfs(coordinate):
                 isStuck = False
 
         if(north == coordinate):
-            print("dor")
             break
         if(east == coordinate):
-            print("dor")
             break
         if(west == coordinate):
-            print("dor")
             break
         if(south == coordinate):
-            print("dor")
             break
-        print("====================")
-        now += 1
 
+        if cek == False:
+            now += 1
+        print("==============================================")
 
 # def on_key_up(key):
 #     if key in (keys.LEFT, keys.RIGHT):
