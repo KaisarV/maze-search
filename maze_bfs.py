@@ -1,5 +1,6 @@
 import random
 import time
+import pgzrun
 
 WORLD_SIZE = 20
 BLOCK_SIZE = 32
@@ -212,25 +213,6 @@ def bfs(coordinate):
         now += 1
 
 
-def on_key_up(key):
-    if key in (keys.LEFT, keys.RIGHT):
-        pacman.dx = 0
-    if key in (keys.UP, keys.DOWN):
-        pacman.dy = 0
-
-
-def on_key_down(key):
-    print(pacman.x, pacman.y)
-    if key == keys.LEFT:
-        pacman.dx = -SPEED
-    if key == keys.RIGHT:
-        pacman.dx = SPEED
-    if key == keys.UP:
-        pacman.dy = -SPEED
-    if key == keys.DOWN:
-        pacman.dy = SPEED
-
-
 # Load Txt
 load_level(1)
 
@@ -287,3 +269,5 @@ def update():
 
 for row in world:
     print(row)
+
+pgzrun.go()

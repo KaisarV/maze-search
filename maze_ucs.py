@@ -1,5 +1,6 @@
 import random
 import time
+import pgzrun
 
 WORLD_SIZE = 20
 BLOCK_SIZE = 32
@@ -26,6 +27,7 @@ marker.dx, marker.dy = 0, 0
 char_to_image = {
     '.': 'dot.png',
     '=': 'wall.png',
+
 }
 
 
@@ -121,7 +123,6 @@ class Node:
 
 
 head = Node([32, 32])
-unvisitedNode = []
 
 
 def isInLinkedList(data):
@@ -136,150 +137,87 @@ def isInLinkedList(data):
     return True
 
 
-def isInUnvisitedNode(data):
-    for i in range(0, len(unvisitedNode)):
-        if data == unvisitedNode[i]:
-            return False
+def ucs(coordinate):
 
-    return True
-
-
-def dfs(coordinate):
-
-    # for row in world:
-    #     print(row)
-
-    global unvisitedNode
-    # elemen pertama untuk jika tidak stuck, elemen kedua menyimpan cabang
     now = 1
-    isStuck = False
-    hasFound = False
-
-    a = 0
     while True:
-        print(now, "ini now")
-        tes = head
+
         counter = 1
-        lastNode = head
+        current = head
         currentNode = head
-        a += 1
-        while tes != None:
-            print(tes.data)
-            tes = tes.next
 
-        if isStuck == True:
-            print(unvisitedNode)
-            while currentNode.data != unvisitedNode[len(unvisitedNode)-1]:
-                currentNode = currentNode.next
+        while counter != now:
+            currentNode = currentNode.next
+            counter += 1
 
-            print(currentNode.data, "ini current stuck")
-            unvisitedNode = unvisitedNode[:-1]
-        else:
-            while counter != now:
-                currentNode = currentNode.next
-                counter += 1
+        while current.next is not None:
+            current = current.next
 
-        while lastNode.next != None:
-            lastNode = lastNode.next
+        north = [currentNode.data[0]-32, currentNode.data[1]]
 
-        if isInUnvisitedNode(currentNode.data) == True or isStuck == True:
+        east = [currentNode.data[0], currentNode.data[1]+32]
 
-            if isStuck == True:
-                cek = True
-            else:
-                cek = False
+        south = [currentNode.data[0]+32, currentNode.data[1]]
 
-            north = [currentNode.data[0]-32, currentNode.data[1]]
+        west = [currentNode.data[0], currentNode.data[1]-32]
 
-            east = [currentNode.data[0], currentNode.data[1]+32]
+        if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
 
-            south = [currentNode.data[0]+32, currentNode.data[1]]
-
-            west = [currentNode.data[0], currentNode.data[1]-32]
-
-            hasFound = False
-
-            # cek west
-            if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
-
-                hasFound = True
-
-                current = head
-                while current.next is not None:
-                    current = current.next
-
-                newNode = Node(west)
-
-                newNode.prev = currentNode
-                current.next = newNode
-
-            if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
-                current = head
-                while current.next is not None:
-                    current = current.next
-
-                newNode = Node(south)
-
-                newNode.prev = currentNode
-                current.next = newNode
-
-                if hasFound == True:
-                    unvisitedNode.append(newNode.data)
-                else:
-                    hasFound = True
-
-            if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
-                current = head
-                while current.next is not None:
-                    current = current.next
-
-                newNode = Node(east)
-                current.next = newNode
-                current.next.prev = currentNode
-
-                if hasFound == True:
-                    unvisitedNode.append(newNode.data)
-                else:
-                    hasFound = True
-
-            if(world[north[0]//32][north[1]//32] != '=' and isInLinkedList(north) == True):
-                current = head
-                while current.next is not None:
-                    current = current.next
-
-                newNode = Node(north)
-                newNode.prev = currentNode
-                current.next = newNode
-
-                if hasFound == True:
-                    unvisitedNode.append(newNode.data)
-                else:
-                    hasFound = True
-
-            if(hasFound == False):
-                isStuck = True
-            else:
-                isStuck = False
+            newNode = Node(north)
+            newNode.prev = currentNode
+            current.next = newNode
 
         if(north == coordinate):
             break
+
+        if(world[east[0]//32][east[1]//32] != '=' and isInLinkedList(east) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
+
+            newNode = Node(east)
+            current.next = newNode
+            current.next.prev = currentNode
+
         if(east == coordinate):
             break
-        if(west == coordinate):
-            break
+
+        if(world[south[0]//32][south[1]//32] != '=' and isInLinkedList(south) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
+
+            newNode = Node(south)
+            newNode.prev = currentNode
+            current.next = newNode
+
         if(south == coordinate):
             break
 
-        if cek == False:
-            now += 1
-        print("==============================================")
+        if(world[west[0]//32][west[1]//32] != '=' and isInLinkedList(west) == True):
+            current = head
+            while current.next is not None:
+                current = current.next
+
+            newNode = Node(west)
+
+            newNode.prev = currentNode
+            current.next = newNode
+
+        if(west == coordinate):
+            break
+
+        now += 1
 
 
 # Load Txt
 load_level(1)
 
 # Call Bfs
-dfs([384, 0])
+ucs([384, 0])
 
 current = head
 listNode = []
@@ -298,11 +236,12 @@ while current is not None:
 
 
 def update():
+    move_ahead(pacman)
 
     if(len(listNode) != 0):
         if len(listNode) != 0:
             screen.blit('marker.png', (listNode[0][1], listNode[0][0]))
-            time.sleep(0.08)
+            time.sleep(0.05)
 
         if len(listNode) != 0:
             listNode.pop(0)
@@ -330,3 +269,5 @@ def update():
 
 for row in world:
     print(row)
+
+pgzrun.go()
