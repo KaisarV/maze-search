@@ -13,7 +13,7 @@ SPEED = 2
 world = []
 
 # Our sprites
-pacman = Actor('pacman_o.png', anchor=('left', 'top'))
+pacman = Actor('pacman_c.png', anchor=('left', 'top'))
 marker = Actor('marker.png', anchor=('left', 'top'))
 pacman.x = pacman.y = 1*BLOCK_SIZE
 marker.x = marker.y = 1*BLOCK_SIZE
