@@ -163,9 +163,9 @@ def dfs(coordinate):
         lastNode = head
         currentNode = head
         a += 1
-        while tes != None:
-            print(tes.data)
-            tes = tes.next
+        # while tes != None:
+        #     print(tes.data)
+        #     tes = tes.next
 
         if isStuck == True:
             print(unvisitedNode)
@@ -299,6 +299,12 @@ while current is not None:
 
 def update():
 
+    current = head
+    print("==================================================================================")
+    while current != None:
+        print(current.data)
+
+        current = current.next
     if(len(listNode) != 0):
         if len(listNode) != 0:
             screen.blit('marker.png', (listNode[0][1], listNode[0][0]))
